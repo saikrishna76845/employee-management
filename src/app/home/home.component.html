@@ -1,0 +1,69 @@
+<div class="container">
+  <button mat-raised-button color="primary" (click)="openDialog()">Add Employee</button>
+  
+  <!-- Search Box -->
+  <mat-form-field>
+    <input matInput [(ngModel)]="searchQuery" placeholder="Search by name, email or phone">
+  </mat-form-field>
+  
+  <!-- Employee Data Table -->
+  <table mat-table [dataSource]="filteredEmployees">
+    <ng-container matColumnDef="employeeId">
+      <th mat-header-cell *matHeaderCellDef> Employee ID </th>
+      <td mat-cell *matCellDef="let element">{{element.employeeId}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef> Phone </th>
+      <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="editEmployee(element.employeeId)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteEmployee(element.employeeId)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <!-- Employee Dialog Template -->
+  <ng-template #dialogTemplate let-data="data">
+    <h1 mat-dialog-title class="emp-detail-dialog">emp-detail-dialog</h1>
+    <form [formGroup]="employeeForm">
+      <mat-form-field *ngIf="data">
+        <input matInput formControlName="employeeId" placeholder="Employee ID" readonly>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput formControlName="name" placeholder="Name" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput formControlName="email" placeholder="Email" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput formControlName="phone" placeholder="Phone" required>
+      </mat-form-field>
+    </form>
+
+    <div mat-dialog-actions>
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!employeeForm.valid">Save</button>
+    </div>
+  </ng-template>
+</div>
