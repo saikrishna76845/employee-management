@@ -6,6 +6,7 @@ import { Employee } from '../employee';
 import { MatDialog} from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TemplateRef } from '@angular/core';
+import { EmployeeService } from '../services/employee.service';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -45,7 +46,7 @@ export class HomeComponent implements OnInit, AfterViewInit  {
 
   displayedColumns: string[] = ['employeeId', 'name', 'email', 'phone', 'actions'];
 
-  constructor( private dialog: MatDialog, private fb: FormBuilder) {
+  constructor( private dialog: MatDialog, private fb: FormBuilder, private employeeService: EmployeeService) {
     const firebaseApp = initializeApp(environment.firebase);
     
     // console.log('Firebase initialized:', firebaseApp);
@@ -78,16 +79,12 @@ export class HomeComponent implements OnInit, AfterViewInit  {
     });
   }
 
-  fetchEmployees(): void {
-    this.employees = [];
-    const itemsCollection = collection(this.firestore, 'Employees');
-    getDocs(itemsCollection).then(querySnapshot => {
-      querySnapshot.forEach((doc) => {
-        this.employees.push(doc.data() as Employee);
-      });
-    }).catch(error => {
+  async fetchEmployees(): Promise<void> {
+    try {
+      this.employees = await this.employeeService.fetchEmployees();
+    } catch (error) {
       console.error("Error fetching employees: ", error);
-    });
+    }
   }
 
   openDialog(employee: Employee | null = null): void {
@@ -285,4 +282,3 @@ export class HomeComponent implements OnInit, AfterViewInit  {
   }
   
   }
-  
